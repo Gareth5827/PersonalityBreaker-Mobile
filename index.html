@@ -19,9 +19,9 @@
             margin-bottom: 20px;
         }
         .button {
-            padding: 10px 20px;
+            padding: 5px 10px;
             margin: 5px;
-            font-size: 1rem;
+            font-size: 0.8rem;
         }
         #buttonContainer {
             display: flex;
@@ -30,7 +30,11 @@
             gap: 10px;
             margin-bottom: 20px;
         }
-        #newTopicButton, #easyToggle, #mediumToggle, #hardToggle {
+        #difficultyContainer {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
             margin: 10px 0;
         }
         #specialText, #topicText, #bannedWordsLabel, #bannedWords {
@@ -40,7 +44,7 @@
         #specialText, #bannedWords {
             width: 90%;
             max-width: 600px;
-            height: 200px;
+            height: 300px;
             font-size: 1.5rem;
             border: 1px solid black;
             padding: 10px;
@@ -55,10 +59,12 @@
         <button class="button" id="stopButton" onclick="stopTimer()">Stop Timer</button>
         <button class="button" id="resetButton" onclick="resetTimer()">Reset Timer</button>
     </div>
+    <div id="difficultyContainer">
+        <button class="button" id="easyToggle" onclick="setDifficulty('easy')">Easy</button>
+        <button class="button" id="mediumToggle" onclick="setDifficulty('medium')">Medium</button>
+        <button class="button" id="hardToggle" onclick="setDifficulty('hard')">Hard</button>
+    </div>
     <button class="button" id="newTopicButton" onclick="newTopic()">New Topic</button>
-    <button class="button" id="easyToggle" onclick="setDifficulty('easy')">Easy</button>
-    <button class="button" id="mediumToggle" onclick="setDifficulty('medium')">Medium</button>
-    <button class="button" id="hardToggle" onclick="setDifficulty('hard')">Hard</button>
     <div id="specialText"></div>
     <div id="topicText"></div>
     <div id="bannedWordsLabel">Banned words</div>
