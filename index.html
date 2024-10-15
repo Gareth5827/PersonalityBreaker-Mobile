@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Breaker</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #timer {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1rem;
+        }
+        #buttonContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #newTopicButton, #easyToggle, #mediumToggle, #hardToggle {
+            margin: 10px 0;
+        }
+        #specialText, #topicText, #bannedWordsLabel, #bannedWords {
+            margin: 10px 0;
+            text-align: center;
+        }
+        #specialText, #bannedWords {
+            width: 90%;
+            max-width: 600px;
+            height: 200px;
+            font-size: 1.5rem;
+            border: 1px solid black;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <div id="timer">01:30:00</div>
+    <div id="buttonContainer">
+        <button class="button" id="startButton" onclick="startTimer()">Start Timer</button>
+        <button class="button" id="stopButton" onclick="stopTimer()">Stop Timer</button>
+        <button class="button" id="resetButton" onclick="resetTimer()">Reset Timer</button>
+    </div>
+    <button class="button" id="newTopicButton" onclick="newTopic()">New Topic</button>
+    <button class="button" id="easyToggle" onclick="setDifficulty('easy')">Easy</button>
+    <button class="button" id="mediumToggle" onclick="setDifficulty('medium')">Medium</button>
+    <button class="button" id="hardToggle" onclick="setDifficulty('hard')">Hard</button>
+    <div id="specialText"></div>
+    <div id="topicText"></div>
+    <div id="bannedWordsLabel">Banned words</div>
+    <div id="bannedWords"></div>
+
+    <script>
+        let timerInterval;
+        let timeRemaining = 90000; // 1 minute 30 seconds in milliseconds
+        let previousTopic = '';
+        const topics = ["the weather", "shopping malls", "paint", "cardboard boxes", "concerts", "a ceiling fan"];
+        const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
+        const songNames = ["Cyanide by Bad Religion", "Too much, too young, too fast by Airbourne", "Poison by Alice Cooper", "Computer music by She", "Like sexy dynamite by The Orion Experience"]; // Add more song names here
+        const stationNames = ["CJIQ 88.3, the tri-cities alternative", "Chym 96.7, Kitcheners perfect music mix", "Country 106.7, #1 for country"]; // Add more station names here
+        let difficulty = 'easy';
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeRemaining -= 10;
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    timeRemaining = 0;
+                }
+                updateTimerDisplay();
+            }, 10);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = 90000; // Reset to 1 minute 30 seconds
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = String(Math.floor(timeRemaining / 60000)).padStart(2, '0');
+            const seconds = String(Math.floor((timeRemaining % 60000) / 1000)).padStart(2, '0');
+            const milliseconds = String((timeRemaining % 1000) / 10).padStart(2, '0');
+            document.getElementById('timer').innerText = `${minutes}:${seconds}:${milliseconds}`;
+        }
+
+        function newTopic() {
+            let newTopic;
+            do {
+                newTopic = topics[Math.floor(Math.random() * topics.length)];
+            } while (newTopic === previousTopic);
+            previousTopic = newTopic;
+            document.getElementById('topicText').innerText = `Your topic is ${newTopic}!`;
+            updateBannedWords();
+            updateSpecialText();
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            document.getElementById('easyToggle').style.backgroundColor = level === 'easy' ? 'lightblue' : '';
+            document.getElementById('mediumToggle').style.backgroundColor = level === 'medium' ? 'lightblue' : '';
+            document.getElementById('hardToggle').style.backgroundColor = level === 'hard' ? 'lightblue' : '';
+            updateBannedWords(); // Update banned words immediately when difficulty changes
+        }
+
+        function updateBannedWords() {
+            let numWords;
+            if (difficulty === 'easy') {
+                numWords = Math.floor(Math.random() * 3) + 1;
+            } else if (difficulty === 'medium') {
+                numWords = Math.floor(Math.random() * 4) + 4;
+            } else {
+                numWords = Math.floor(Math.random() * 8) + 8;
+            }
+            const banned = [];
+            while (banned.length < numWords) {
+                const word = words[Math.floor(Math.random() * words.length)];
+                if (!banned.includes(word)) {
+                    banned.push(word);
+                }
+            }
+            document.getElementById('bannedWords').innerText = banned.join(', ');
+        }
+
+        function updateSpecialText() {
+            const song1 = songNames[Math.floor(Math.random() * songNames.length)];
+            let song2;
+            do {
+                song2 = songNames[Math.floor(Math.random() * songNames.length)];
+            } while (song2 === song1);
+            const station = stationNames[Math.floor(Math.random() * stationNames.length)];
+            document.getElementById('specialText').innerText = `That was ${song1} on ${station}. And coming up next we've got ${song2} only on ${station}!`;
+        }
+
+        // Set default difficulty to easy and generate the initial topic
+        setDifficulty('easy');
+        newTopic();
+
+        updateTimerDisplay(); // Initial display update
+    </script>
+</body>
+</html>
