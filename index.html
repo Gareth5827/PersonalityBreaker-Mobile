@@ -88,50 +88,84 @@
 
     <script>
         let timerInterval;
-        let timeRemaining = 90000; // 1 minute 30 seconds in milliseconds
+        let timeElapsed = 0;
         let previousTopic = '';
         const topics = ["the weather", "shopping malls", "paint", "cardboard boxes", "concerts", "a ceiling fan"];
         const words = ["apple", "banana", "grape", "pineapple", "lime", "lemon", "orange", "tangerine", "cherry", "crab apple", "plantain", "grapefruit", "clementine", "pomegranate", "passionfruit"];
-        const songNames = ["Cyanide by Bad Religion", "Too much, too young, too fast by Airbourne", "Poison by Alice Cooper", "Computer music by She", "Like sexy dynamite by The Orion Experience"]; // Add more song names here
-        const stationNames = ["CJIQ 88.3, the tri-cities alternative", "Chym 96.7, Kitcheners perfect music mix", "Country 106.7, #1 for country"]; // Add more station names here
+        const stationsWithSongs = {
+        "CJIQ 88.3, the tri-cities alternative": [
+            "Human heat by Sam Robers",
+            "The mountain by Three days grace",
+            "Day I die by The national",
+            "One thing by Finger Eleven",
+            "I feel alive by Art D'ecco",
+            "The best by Awolnation",
+            "Can't slow down by Almost monday"
+        ],
+        "Chym 96.7, Kitcheners perfect music mix": [
+            "Shivers by Ed Sheeran",
+            "Waterfalls by TLC",
+            "Cheap thrills by Sia",
+            "Powerless by Nelly Furtado",
+            "Take on me by A-ha",
+            "These days by MacKenzie Porter",
+            "Roar by Katy Perry",
+            "Beautiful things by Benson Boone"
+        ],
+        "Country 106.7, #1 for country": [
+            "But I got a beer in my hand by Like Bryan",
+            "All night by Brothers Osborne",
+            "Band on her t-shirt by The washboard union",
+            "Stars like confetti by Dustin lynch",
+            "What is a good memory by Tyler joe miller",
+            "Toes by Zac brown band",
+            "Broken umbrella by Jojo manson",
+            "Pour me a drink by Post malone and Blake shelton"
+        ]
+            };
         let difficulty = 'easy';
 
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                timeRemaining -= 10;
-                if (timeRemaining <= 0) {
-                    clearInterval(timerInterval);
-                    timeRemaining = 0;
-                }
+                timeElapsed += 10;
                 updateTimerDisplay();
             }, 10);
         }
-
+        
         function stopTimer() {
             clearInterval(timerInterval);
         }
-
+        
         function resetTimer() {
             clearInterval(timerInterval);
-            timeRemaining = 90000; // Reset to 1 minute 30 seconds
+            timeElapsed = 0; // Reset to 0:00
             updateTimerDisplay();
         }
-
+        
         function updateTimerDisplay() {
-            const minutes = String(Math.floor(timeRemaining / 60000)).padStart(2, '0');
-            const seconds = String(Math.floor((timeRemaining % 60000) / 1000)).padStart(2, '0');
-            const milliseconds = String((timeRemaining % 1000) / 10).padStart(2, '0');
+            const minutes = String(Math.floor(timeElapsed / 60000)).padStart(2, '0');
+            const seconds = String(Math.floor((timeElapsed % 60000) / 1000)).padStart(2, '0');
+            const milliseconds = String((timeElapsed % 1000) / 10).padStart(2, '0');
             document.getElementById('timer').innerText = `${minutes}:${seconds}:${milliseconds}`;
         }
 
         function newTopic() {
             let newTopic;
+            const showTypes = ["morning show", "noon show", "evening show"];
+            const times = ["start", "middle", "end"];
+            const months = ["April", "May", "June", "July", "August", "September", "October", "November", "December", "January", "February", "March"];
+        
             do {
                 newTopic = topics[Math.floor(Math.random() * topics.length)];
             } while (newTopic === previousTopic);
+        
+            const showType = showTypes[Math.floor(Math.random() * showTypes.length)];
+            const time = times[Math.floor(Math.random() * times.length)];
+            const month = months[Math.floor(Math.random() * months.length)];
+        
             previousTopic = newTopic;
-            document.getElementById('topicText').innerText = `Your topic is ${newTopic}!`;
+            document.getElementById('topicText').innerText = `Your topic is ${newTopic}! And it's a ${showType} at the ${time} of ${month}`;
             updateBannedWords();
             updateSpecialText();
         }
@@ -164,12 +198,13 @@
         }
 
         function updateSpecialText() {
-            const song1 = songNames[Math.floor(Math.random() * songNames.length)];
+            const station = Object.keys(stationsWithSongs)[Math.floor(Math.random() * Object.keys(stationsWithSongs).length)];
+            const songs = stationsWithSongs[station];
+            const song1 = songs[Math.floor(Math.random() * songs.length)];
             let song2;
             do {
-                song2 = songNames[Math.floor(Math.random() * songNames.length)];
+                song2 = songs[Math.floor(Math.random() * songs.length)];
             } while (song2 === song1);
-            const station = stationNames[Math.floor(Math.random() * stationNames.length)];
             document.getElementById('specialText').innerText = `That was ${song1} on ${station}. And coming up next we've got ${song2} only on ${station}!`;
         }
 
